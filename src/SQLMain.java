@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class SQL {
+public class SQLMain {
 
 	public static void main(String[] args) throws SQLException {
 
@@ -15,7 +15,7 @@ public class SQL {
 
 		try {
 
-			String url = "C:\\Users\\MADLo\\OneDrive\\Dokumente\\Eclipse Workspaces\\OOP\\FeelQuoteFlutterQuotes\\SQLite\\testMot.db";
+			String url = "jdbc:sqlite:C:\\Users\\MADLo\\OneDrive\\Dokumente\\Eclipse Workspaces\\OOP\\FeelQuoteFlutterQuotes\\SQLite\\testMot.db";
 
 			conn = DriverManager.getConnection(url);
 
@@ -26,4 +26,17 @@ public class SQL {
 		}
 
 	}
+}
+class SQLMethods{
+	
+	Connection c;
+	
+	public SQLMethods(Connection c) {
+		this.c = c;
+	}
+	
+	void createSchema() {
+		Prepared
+	}
+	
 }
