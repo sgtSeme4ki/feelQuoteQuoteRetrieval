@@ -15,7 +15,7 @@ public class QuoteAlgorithm {
 	ArrayList<String> text = new ArrayList<String>();
 	ArrayList<String> author = new ArrayList<String>();
 
-	public static void main(String[] args) {
+	public static String main(String[] args) {
 		String generate_URL = "https://www.oberlo.com/blog/motivational-quotes";
 		String inputLine;
 		String extractedQuote = "";
@@ -55,13 +55,12 @@ public class QuoteAlgorithm {
 			extractedQuote = extractedQuote.replaceAll("&#x2014;", " - ");
 			extractedQuote = extractedQuote.replaceAll("&#xE9;", "é");
 			extractedQuote = extractedQuote.replaceAll("motivator.'", "motivator.");
-			System.out.println(extractedQuote);
 			in.close();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return extractedQuote;
 
 	}
-
 }
