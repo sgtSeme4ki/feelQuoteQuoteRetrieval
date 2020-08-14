@@ -20,6 +20,9 @@ public class SQLMain {
 			conn = DriverManager.getConnection(url);
 
 			System.out.println("Connected \n");
+			SQLMethods test = new SQLMethods(conn);
+			//test.createSchema();
+			
 
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -35,8 +38,40 @@ class SQLMethods{
 		this.c = c;
 	}
 	
-	void createSchema() {
-		Prepared
+	void createSchema() throws SQLException {
+		Statement create = c.createStatement();
+		try {
+			
+			create.execute("create table if not exists quote( "
+					+ "quote_id integer primary key autoincrement, "
+					+ "quote_class varchar(15), "
+					+ "quote_text text, "
+					+ "author string, "
+					+ "ratingLike integer, "
+					+ "ratingTime integer, "
+					+ "initial_date text);");
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
 	}
 	
+	void insertQuote(String quote_class, String quote, String author) {
+		try {
+			PreparedStatement insert = c.prepareStatement("insert into quote(default, ?, ?, ?, 0, 0, select date('now'));");
+			insert.setString(1, quote_class);
+			insert.setString(2, quote);
+			insert.setString(3, author);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	void createView(String quote_class) {
+		try {
+			//create View here
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }
