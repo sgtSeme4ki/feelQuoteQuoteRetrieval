@@ -18,9 +18,17 @@ public class SQLMain {
 			String url = "jdbc:sqlite:C:\\Users\\MADLo\\OneDrive\\Dokumente\\Eclipse Workspaces\\OOP\\FeelQuoteFlutterQuotes\\SQLite\\testMot.db";
 
 			conn = DriverManager.getConnection(url);
-
+			conn.setAutoCommit(false);
 			System.out.println("Connected \n");
 			SQLMethods test = new SQLMethods(conn);
+			test.createSchema();
+			test.insertQuote("motivational", "Rosen sind rot, Veillchen sind blau", "Bruce Lee");
+			test.insertQuote("motivational", "Be like water", "Bruce Lee");
+			test.insertQuote("motivational", "It's important to drink water", "Ghandi");
+			
+			Statement StmtAll = conn.createStatement();
+			ResultSet RsAll = StmtAll.executeQuery("Select * from quote;");
+			while(RsAll.next()) System.out.println(RsAll.getObject(1) + "|" + RsAll.getObject(2) + "|" +RsAll.getObject(3) + "|" + RsAll.getObject(4) + "|" +RsAll.getObject(5) + "|" + RsAll.getObject(6) + "|" + RsAll.getObject(7));
 			//test.createSchema();
 			
 
@@ -50,7 +58,7 @@ class SQLMethods{
 					+ "ratingLike integer, "
 					+ "ratingTime integer, "
 					+ "initial_date text);");
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			
 			e.printStackTrace();
 		}
@@ -58,10 +66,11 @@ class SQLMethods{
 	
 	void insertQuote(String quote_class, String quote, String author) {
 		try {
-			PreparedStatement insert = c.prepareStatement("insert into quote(default, ?, ?, ?, 0, 0, select date('now'));");
+			PreparedStatement insert = c.prepareStatement("insert into quote(quote_class, quote_text, author, ratingLike, ratingTime, initial_date) values ( ?, ?, ?, 0, 0, date('now'));");
 			insert.setString(1, quote_class);
 			insert.setString(2, quote);
 			insert.setString(3, author);
+			insert.execute();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -69,7 +78,8 @@ class SQLMethods{
 	}
 	void createView(String quote_class) {
 		try {
-			//create View here
+			PreparedStatement view = c.prepareStatement("drop view if exists quote_view; create quote_view(quote_id, quote_class, quote_text, author, rating) as"
+					+ " select quote_id, quote_class, quote_text, author, ratingLike");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
