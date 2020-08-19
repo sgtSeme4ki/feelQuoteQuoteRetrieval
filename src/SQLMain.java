@@ -27,6 +27,11 @@ public class SQLMain {
 			test.insertQuote("motivational", "It's important to drink water", "Ghandi");
 			System.out.println(test.toString());
 
+			test.right(1); // +30
+			test.favorite(1); // +100
+			test.left(1); // -30
+			System.out.println("\n" + test);
+
 			// test.createSchema();
 
 		} catch (SQLException ex) {
@@ -51,6 +56,7 @@ class SQLMethods {
 			create.execute("create table if not exists quote( " + "quote_id integer primary key autoincrement, "
 					+ "quote_class varchar(15), " + "quote_text text, " + "author string, " + "ratingLike integer, "
 					+ "ratingTime integer, " + "initial_date text);");
+			create.execute("");
 			create.close();
 		} catch (Exception e) {
 
@@ -61,7 +67,7 @@ class SQLMethods {
 	void insertQuote(String quote_class, String quote, String author) {
 		try {
 			PreparedStatement insert = c.prepareStatement(
-					"insert into quote(quote_class, quote_text, author, ratingLike, ratingTime, initial_date) values ( ?, ?, ?, 0, 0, date('now'));");
+					"insert into quote(quote_class, quote_text, author, ratingLike, initial_date) values ( ?, ?, ?, 0, 0, date('now'));");
 			insert.setString(1, quote_class);
 			insert.setString(2, quote);
 			insert.setString(3, author);
@@ -76,7 +82,7 @@ class SQLMethods {
 	void createView(String quote_class) {
 		try {
 			PreparedStatement view = c.prepareStatement(
-					"drop view if exists quote_view; create quote_view(quote_id, quote_class, quote_text, author, rating) as"
+					"drop view if exists quote_view; create temp quote_view(quote_id, quote_class, quote_text, author, rating) as"
 							+ " select quote_id, quote_class, quote_text, author, ratingLike");
 			view.close();
 		} catch (SQLException e) {
@@ -121,6 +127,14 @@ class SQLMethods {
 		}
 	}
 
+	void dateRating() {
+		try {
+			PreparedStatement date = c.prepareStatement("update quote set ratingTime");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public String toString() {
 		Statement StmtAll;
@@ -130,15 +144,14 @@ class SQLMethods {
 			ResultSet RsAll = StmtAll.executeQuery("Select * from quote;");
 			while (RsAll.next())
 				out += RsAll.getObject(1) + "|" + RsAll.getObject(2) + "|" + RsAll.getObject(3) + "|"
-						+ RsAll.getObject(4) + "|" + RsAll.getObject(5) + "|" + RsAll.getObject(6) + "|"
-						+ RsAll.getObject(7) + "\n";
+						+ RsAll.getObject(4) + "|" + RsAll.getObject(5) + "|" + RsAll.getObject(6) + "\n";
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return out.substring(0, out.length() - 1);		//cut off last newline
+
+		return out.substring(0, out.length() - 1); // cut off last newline
 
 	}
 }
