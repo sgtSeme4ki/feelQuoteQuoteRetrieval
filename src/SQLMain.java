@@ -26,12 +26,12 @@ public class SQLMain {
 			test.insertQuote("motivational", "Be like water", "Bruce Lee");
 			test.insertQuote("motivational", "It's important to drink water", "Ghandi");
 			System.out.println(test.toString());
-
 			test.right(1); // +30
 			test.favorite(1); // +100
 			test.left(1); // -30
 			System.out.println("\n" + test);
-
+			test.dateRating();
+			System.out.println("\n" + test);
 			// test.createSchema();
 
 		} catch (SQLException ex) {
@@ -55,8 +55,8 @@ class SQLMethods {
 
 			create.execute("create table if not exists quote( " + "quote_id integer primary key autoincrement, "
 					+ "quote_class varchar(15), " + "quote_text text, " + "author string, " + "ratingLike integer, "
-					+ "ratingTime integer, " + "initial_date text);");
-			create.execute("");
+					+ "initial_date text);");
+			//create.execute(""); creating Trigger for view
 			create.close();
 		} catch (Exception e) {
 
@@ -67,7 +67,7 @@ class SQLMethods {
 	void insertQuote(String quote_class, String quote, String author) {
 		try {
 			PreparedStatement insert = c.prepareStatement(
-					"insert into quote(quote_class, quote_text, author, ratingLike, initial_date) values ( ?, ?, ?, 0, 0, date('now'));");
+					"insert into quote(quote_class, quote_text, author, ratingLike, initial_date) values ( ?, ?, ?, 0, date('now'));");
 			insert.setString(1, quote_class);
 			insert.setString(2, quote);
 			insert.setString(3, author);
@@ -129,7 +129,8 @@ class SQLMethods {
 
 	void dateRating() {
 		try {
-			PreparedStatement date = c.prepareStatement("update quote set ratingTime");
+			PreparedStatement date = c.prepareStatement("update quote set ratingTime = new_rating from (select date('now') - initial_date);"
+					+ " update quote set initial_date = date('now');");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -150,7 +151,10 @@ class SQLMethods {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		if(out.length() == 0) {
+			return "no Tuples";
+		}
+	
 		return out.substring(0, out.length() - 1); // cut off last newline
 
 	}
