@@ -25,13 +25,8 @@ public class SQLMain {
 			test.insertQuote("motivational", "Rosen sind rot, Veillchen sind blau", "Bruce Lee");
 			test.insertQuote("motivational", "Be like water", "Bruce Lee");
 			test.insertQuote("motivational", "It's important to drink water", "Ghandi");
+			System.out.println(test.toString());
 
-			Statement StmtAll = conn.createStatement();
-			ResultSet RsAll = StmtAll.executeQuery("Select * from quote;");
-			while (RsAll.next())
-				System.out.println(RsAll.getObject(1) + "|" + RsAll.getObject(2) + "|" + RsAll.getObject(3) + "|"
-						+ RsAll.getObject(4) + "|" + RsAll.getObject(5) + "|" + RsAll.getObject(6) + "|"
-						+ RsAll.getObject(7));
 			// test.createSchema();
 
 		} catch (SQLException ex) {
@@ -124,5 +119,26 @@ class SQLMethods {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public String toString() {
+		Statement StmtAll;
+		String out = "";
+		try {
+			StmtAll = c.createStatement();
+			ResultSet RsAll = StmtAll.executeQuery("Select * from quote;");
+			while (RsAll.next())
+				out += RsAll.getObject(1) + "|" + RsAll.getObject(2) + "|" + RsAll.getObject(3) + "|"
+						+ RsAll.getObject(4) + "|" + RsAll.getObject(5) + "|" + RsAll.getObject(6) + "|"
+						+ RsAll.getObject(7) + "\n";
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return out.substring(0, out.length() - 1);		//cut off last newline
+
 	}
 }
