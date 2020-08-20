@@ -129,8 +129,9 @@ class SQLMethods {
 
 	void dateRating() {
 		try {
-			PreparedStatement date = c.prepareStatement("update quote set ratingTime = new_rating from (select date('now') - initial_date);"
-					+ " update quote set initial_date = date('now');");
+			PreparedStatement date = c.prepareStatement("update quote set ratingLike = ratingLike + ((select date('now') - initial_date) * 10);"
+					+ " update quote set initial_date = date('now');");	
+			date.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
