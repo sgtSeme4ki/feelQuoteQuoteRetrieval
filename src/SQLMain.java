@@ -6,10 +6,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.io.*;
 
 public class SQLMain {
 
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) throws SQLException, IOException {
 
 		Connection conn = null;
 
@@ -22,18 +23,8 @@ public class SQLMain {
 			System.out.println("Connected \n");
 			SQLMethods test = new SQLMethods(conn);
 			test.createSchema();
-			test.insertQuote("motivational", "Rosen sind rot, Veillchen sind blau", "Bruce Lee");
-			test.insertQuote("motivational", "Be like water", "Bruce Lee");
-			test.insertQuote("motivational", "It's important to drink water", "Ghandi");
+			test.readFile("motQuotes.txt", "motivational");
 			System.out.println(test.toString());
-			test.right(1); // +30
-			test.favorite(1); // +100
-			test.left(1); // -30c
-			System.out.println("\n" + test);
-			test.dateRating();
-			System.out.println("\n" + test);
-			// test.createSchema();
-
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
@@ -56,7 +47,7 @@ class SQLMethods {
 			create.execute("create table if not exists quote( " + "quote_id integer primary key autoincrement, "
 					+ "quote_class varchar(15), " + "quote_text text, " + "author string, " + "ratingLike integer, "
 					+ "initial_date text, showed integer default 0);");
-			//create.execute(""); creating Trigger for view
+			// create.execute(""); creating Trigger for view
 			create.close();
 		} catch (Exception e) {
 
@@ -129,12 +120,24 @@ class SQLMethods {
 
 	void dateRating() {
 		try {
-			PreparedStatement date = c.prepareStatement("update quote set ratingLike = ratingLike + ((select date('now') - initial_date) * 10);"
-					+ " update quote set initial_date = date('now');");	
+			PreparedStatement date = c.prepareStatement(
+					"update quote set ratingLike = ratingLike + ((select date('now') - initial_date) * 10);"
+							+ " update quote set initial_date = date('now');");
 			date.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	void readFile(String fileName, String quote_class) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(fileName));
+		String line = "";
+		while ((line = reader.readLine()) != null) {
+			String quote = line.substring(0, line.indexOf('|') - 1);
+			String author = line.substring(line.indexOf('|') + 2);
+			insertQuote(quote_class, quote, author);
+		}
+		reader.close();
 	}
 
 	@Override
@@ -146,16 +149,17 @@ class SQLMethods {
 			ResultSet RsAll = StmtAll.executeQuery("Select * from quote;");
 			while (RsAll.next())
 				out += RsAll.getObject(1) + "|" + RsAll.getObject(2) + "|" + RsAll.getObject(3) + "|"
-						+ RsAll.getObject(4) + "|" + RsAll.getObject(5) + "|" + RsAll.getObject(6) + "|" + RsAll.getObject(7) + "\n";
+						+ RsAll.getObject(4) + "|" + RsAll.getObject(5) + "|" + RsAll.getObject(6) + "|"
+						+ RsAll.getObject(7) + "\n";
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if(out.length() == 0) {
+		if (out.length() == 0) {
 			return "no Tuples";
 		}
-	
+
 		return out.substring(0, out.length() - 1); // cut off last newline
 
 	}
