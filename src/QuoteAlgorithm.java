@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -55,9 +56,11 @@ public class QuoteAlgorithm {
 			extractedQuote = extractedQuote.replaceAll("&#x2014;", " - ");
 			extractedQuote = extractedQuote.replaceAll("&#xE9;", "é");
 			extractedQuote = extractedQuote.replaceAll("motivator.'", "motivator.");
-			System.out.println(extractedQuote);
 			in.close();
-			SQLMethods test = new SQLMethods(null);
+			
+			PrintWriter out = new PrintWriter("motQuotes.txt");
+			out.println(extractedQuote);
+			out.close();
 
 		} catch (Exception e) {
 			e.printStackTrace();
