@@ -93,7 +93,7 @@ class SQLMethods {
 	void favorite(int quote_id) {
 		try {
 			PreparedStatement fav = c
-					.prepareStatement("update quote set ratingLike = ratingLike +100 where quote_id = ?;");
+					.prepareStatement("update quote set ratingLike = ratingLike +100, showed = 1 where quote_id = ?;");
 			fav.setInt(1, quote_id);
 			fav.execute();
 			fav.close();
@@ -105,7 +105,7 @@ class SQLMethods {
 	void left(int quote_id) {
 		try {
 			PreparedStatement left = c
-					.prepareStatement("update quote set ratingLike = ratingLike - 30 where quote_id = ?;");
+					.prepareStatement("update quote set ratingLike = ratingLike - 30, showed = 1 where quote_id = ?;");
 			left.setInt(1, quote_id);
 			left.execute();
 			left.close();
@@ -117,7 +117,7 @@ class SQLMethods {
 	void right(int quote_id) {
 		try {
 			PreparedStatement right = c
-					.prepareStatement("update quote set ratingLike = ratingLike + 30 where quote_id = ?;");
+					.prepareStatement("update quote set ratingLike = ratingLike + 30, showed = 1 where quote_id = ?;");
 			right.setInt(1, quote_id);
 			right.execute();
 			right.close();
