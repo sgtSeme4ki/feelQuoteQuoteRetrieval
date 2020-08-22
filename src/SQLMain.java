@@ -28,7 +28,7 @@ public class SQLMain {
 			System.out.println(test.toString());
 			test.right(1); // +30
 			test.favorite(1); // +100
-			test.left(1); // -30
+			test.left(1); // -30c
 			System.out.println("\n" + test);
 			test.dateRating();
 			System.out.println("\n" + test);
@@ -55,7 +55,7 @@ class SQLMethods {
 
 			create.execute("create table if not exists quote( " + "quote_id integer primary key autoincrement, "
 					+ "quote_class varchar(15), " + "quote_text text, " + "author string, " + "ratingLike integer, "
-					+ "initial_date text);");
+					+ "initial_date text, showed integer default 0);");
 			//create.execute(""); creating Trigger for view
 			create.close();
 		} catch (Exception e) {
@@ -146,7 +146,7 @@ class SQLMethods {
 			ResultSet RsAll = StmtAll.executeQuery("Select * from quote;");
 			while (RsAll.next())
 				out += RsAll.getObject(1) + "|" + RsAll.getObject(2) + "|" + RsAll.getObject(3) + "|"
-						+ RsAll.getObject(4) + "|" + RsAll.getObject(5) + "|" + RsAll.getObject(6) + "\n";
+						+ RsAll.getObject(4) + "|" + RsAll.getObject(5) + "|" + RsAll.getObject(6) + "|" + RsAll.getObject(7) + "\n";
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
