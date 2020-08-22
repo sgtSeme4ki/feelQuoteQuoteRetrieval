@@ -19,11 +19,12 @@ public class SQLMain {
 			String url = "jdbc:sqlite:C:\\Users\\MADLo\\OneDrive\\Dokumente\\Eclipse Workspaces\\OOP\\FeelQuoteFlutterQuotes\\SQLite\\testMot.db";
 
 			conn = DriverManager.getConnection(url);
-			conn.setAutoCommit(false);
+			conn.setAutoCommit(true);
 			System.out.println("Connected \n");
 			SQLMethods test = new SQLMethods(conn);
 			test.createSchema();
 			test.readFile("motQuotes.txt", "motivational");
+			conn.setAutoCommit(false);
 			System.out.println(test.toString());
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -67,6 +68,20 @@ class SQLMethods {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	void sameAuthor() {
+		//Rate quotes with same author of 5 highest rating quotes with +15
+		
+		try(Statement StmtAll = c.createStatement()){
+		ResultSet RsAll = StmtAll.executeQuery("Select * from quote where ratingLike <> 0;");
+		while (RsAll.next()) {
+			int factor = RsAll.getInt("RatingLike");
+			factor = factor / 10;
+		}
+			
+		} catch (SQLException e) {
+			
 		}
 	}
 
