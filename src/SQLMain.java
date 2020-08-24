@@ -23,9 +23,9 @@ public class SQLMain {
 			SQLMethods test = new SQLMethods(conn);
 			conn.setAutoCommit(false);
 			System.out.println(test.toString());
-			test.right(43);			//unknown author 
-			
-			test.right(85);			//unknown author
+			test.right(43); // unknown author
+
+			test.right(85); // unknown author
 			test.sameAuthor();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -74,7 +74,7 @@ class SQLMethods {
 
 	void sameAuthor() {
 		// Rate quotes with same author of 5 highest rating quotes with +15
-		
+
 		// TODO handle unknown authors
 
 		try (Statement StmtAll = c.createStatement();
@@ -82,15 +82,15 @@ class SQLMethods {
 						"update quote set ratingLike = ratingLike + ? where author like ? and quote_id <> ?")) {
 			ResultSet RsAll = StmtAll.executeQuery("Select * from quote where ratingLike <> 0;");
 			while (RsAll.next()) { // one iteration = one tuple
-				
+
 				int factor = RsAll.getInt("RatingLike");
 				factor = factor / 10;
-				updateRatingAuthor.setInt(1, factor);	//increase ratingLike by factor
-				
-				String author = RsAll.getString("author");
-				updateRatingAuthor.setString(2, author); 	//where author equals tuple from RsAll
+				updateRatingAuthor.setInt(1, factor); // increase ratingLike by factor
 
-				int id = RsAll.getInt("quote_id");			//and is not tuple from RsAll
+				String author = RsAll.getString("author");
+				updateRatingAuthor.setString(2, author); // where author equals tuple from RsAll
+
+				int id = RsAll.getInt("quote_id"); // and is not tuple from RsAll
 				updateRatingAuthor.setInt(3, id);
 			}
 
@@ -176,6 +176,49 @@ class SQLMethods {
 		try {
 			StmtAll = c.createStatement();
 			ResultSet RsAll = StmtAll.executeQuery("Select * from quote;");
+			while (RsAll.next())
+				out += RsAll.getObject(1) + "|" + RsAll.getObject(2) + "|" + RsAll.getObject(3) + "|"
+						+ RsAll.getObject(4) + "|" + RsAll.getObject(5) + "|" + RsAll.getObject(6) + "|"
+						+ RsAll.getObject(7) + "\n";
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (out.length() == 0) {
+			return "no Tuples";
+		}
+
+		return out.substring(0, out.length() - 1); // cut off last newline
+
+	}
+
+	public String toString(int quote_id) {
+		String out = "";
+		try (PreparedStatement psAll = c.prepareStatement("select * from quote where quote_id  = ?")) {
+			psAll.setInt(1, quote_id);
+			ResultSet RsAll = psAll.executeQuery();
+			while (RsAll.next())
+				out += RsAll.getObject(1) + "|" + RsAll.getObject(2) + "|" + RsAll.getObject(3) + "|"
+						+ RsAll.getObject(4) + "|" + RsAll.getObject(5) + "|" + RsAll.getObject(6) + "|"
+						+ RsAll.getObject(7) + "\n";
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (out.length() == 0) {
+			return "no Tuples";
+		}
+
+		return out.substring(0, out.length() - 1); // cut off last newline
+
+	}
+	public String toString(String author) {
+		String out = "";
+		try (PreparedStatement psAll = c.prepareStatement("select * from quote where lower(author) like lower(%?%)")) {	//search similiar author
+			psAll.setString(1, author);
+			ResultSet RsAll = psAll.executeQuery();
 			while (RsAll.next())
 				out += RsAll.getObject(1) + "|" + RsAll.getObject(2) + "|" + RsAll.getObject(3) + "|"
 						+ RsAll.getObject(4) + "|" + RsAll.getObject(5) + "|" + RsAll.getObject(6) + "|"
