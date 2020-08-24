@@ -19,13 +19,14 @@ public class SQLMain {
 			String url = "jdbc:sqlite:C:\\Users\\MADLo\\OneDrive\\Dokumente\\Eclipse Workspaces\\OOP\\FeelQuoteFlutterQuotes\\SQLite\\testMot.db";
 
 			conn = DriverManager.getConnection(url);
-			conn.setAutoCommit(true);
 			System.out.println("Connected \n");
 			SQLMethods test = new SQLMethods(conn);
-			test.createSchema();
-			test.readFile("motQuotes.txt", "motivational");
 			conn.setAutoCommit(false);
 			System.out.println(test.toString());
+			test.right(43);			//unknown author 
+			
+			test.right(85);			//unknown author
+			test.sameAuthor();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
@@ -70,18 +71,31 @@ class SQLMethods {
 			e.printStackTrace();
 		}
 	}
+
 	void sameAuthor() {
-		//Rate quotes with same author of 5 highest rating quotes with +15
+		// Rate quotes with same author of 5 highest rating quotes with +15
 		
-		try(Statement StmtAll = c.createStatement()){
-		ResultSet RsAll = StmtAll.executeQuery("Select * from quote where ratingLike <> 0;");
-		while (RsAll.next()) {
-			int factor = RsAll.getInt("RatingLike");
-			factor = factor / 10;
-		}
-			
+		// TODO handle unknown authors
+
+		try (Statement StmtAll = c.createStatement();
+				PreparedStatement updateRatingAuthor = c.prepareStatement(
+						"update quote set ratingLike = ratingLike + ? where author like ? and quote_id <> ?")) {
+			ResultSet RsAll = StmtAll.executeQuery("Select * from quote where ratingLike <> 0;");
+			while (RsAll.next()) { // one iteration = one tuple
+				
+				int factor = RsAll.getInt("RatingLike");
+				factor = factor / 10;
+				updateRatingAuthor.setInt(1, factor);	//increase ratingLike by factor
+				
+				String author = RsAll.getString("author");
+				updateRatingAuthor.setString(2, author); 	//where author equals tuple from RsAll
+
+				int id = RsAll.getInt("quote_id");			//and is not tuple from RsAll
+				updateRatingAuthor.setInt(3, id);
+			}
+
 		} catch (SQLException e) {
-			
+
 		}
 	}
 
