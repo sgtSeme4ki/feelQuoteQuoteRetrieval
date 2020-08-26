@@ -29,6 +29,10 @@ public class SQLMain {
 			System.out.println("\nNew quote = " + test.toString(85));
 			test.sameAuthor();
 			System.out.println("\n" + test.toString("unk"));
+			test.left(392);
+			test.left(392);
+			test.dateRating();
+			System.out.println("\n" + test);
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
@@ -71,6 +75,10 @@ class SQLMethods {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	void sameKeywords() {
+		
 	}
 
 	void sameAuthor() {
@@ -152,9 +160,11 @@ class SQLMethods {
 	void dateRating() {
 		try {
 			PreparedStatement date = c.prepareStatement(
-					"update quote set ratingLike = ratingLike + ((select date('now') - initial_date) * 10);"
-							+ " update quote set initial_date = date('now');");
+					"update quote set ratingLike = ratingLike + (select cast(julianday('now') - julianday(initial_date) as int) * 10) where ratingLike < 0;");
 			date.execute();
+			date = c.prepareStatement("update quote set initial_date = date('now');");
+			date.execute();
+			date.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
