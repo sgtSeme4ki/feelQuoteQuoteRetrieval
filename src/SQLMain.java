@@ -22,17 +22,6 @@ public class SQLMain {
 			System.out.println("Connected \n");
 			SQLMethods test = new SQLMethods(conn);
 			conn.setAutoCommit(false);
-			System.out.println(test.toString());
-			test.right(43); // unknown author
-			System.out.println("\nNew quote = " + test.toString(43));
-			test.right(85); // unknown author
-			System.out.println("\nNew quote = " + test.toString(85));
-			test.sameAuthor();
-			System.out.println("\n" + test.toString("unk"));
-			test.left(392);
-			test.left(392);
-			test.dateRating();
-			System.out.println("\n" + test);
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
@@ -42,7 +31,7 @@ public class SQLMain {
 
 class SQLMethods {
 
-	Connection c;
+	private Connection c;
 
 	public SQLMethods(Connection c) {
 		this.c = c;
@@ -78,7 +67,8 @@ class SQLMethods {
 	}
 	
 	void sameKeywords() {
-		
+		/*PreparedStatement key = c.prepareStatement("create temp view if not e");
+		 */
 	}
 
 	void sameAuthor() {
