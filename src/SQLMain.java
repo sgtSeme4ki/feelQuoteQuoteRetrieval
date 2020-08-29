@@ -22,6 +22,14 @@ public class SQLMain {
 			System.out.println("Connected \n");
 			SQLMethods test = new SQLMethods(conn);
 			conn.setAutoCommit(false);
+			//System.out.println(test.toString());
+			test.right(1); // Make your fear of losing your greatest motivator.
+			test.right(1);
+			test.right(1);
+			test.right(1);
+			test.right(1);//+150
+			test.sameKeywords();
+			System.out.println(test.toString());
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
@@ -65,10 +73,48 @@ class SQLMethods {
 			e.printStackTrace();
 		}
 	}
-	
+
 	void sameKeywords() {
-		/*PreparedStatement key = c.prepareStatement("create temp view if not e");
+		/*
+		 * PreparedStatement key = c.prepareStatement("create temp view if not e");
 		 */
+		try (Statement notShown = c.createStatement();
+				PreparedStatement updateRatingKeyword = c.prepareStatement(
+						"update quote set ratingLike = ratingLike + ? where lower(quote_text) like lower(?) and quote_id <> ? and ratingLike > 150")) {
+			ResultSet RsAll = notShown.executeQuery("select * from quote"); // get all results
+			while (RsAll.next()) {
+
+				int id = RsAll.getInt("quote_id");
+				String quote_class = RsAll.getString("quote_class");
+				int factor = RsAll.getInt("RatingLike");
+				factor = factor / 10;
+
+				String quote = RsAll.getString("quote_text");		//TODO all != usually -> fix
+				quote = quote.replace(".", "");
+				quote = quote.replace(",", "");
+				quote = quote.replace("\"", "");
+				quote = quote.replace("\'", "");
+				String word[] = quote.split(" ");
+				for (int i = 0; i < word.length; i++) {
+
+					if ((word[i].equals("and") || word[i].equals("of") || word[i].equals("a") || word[i].equals("to")
+							|| word[i].equals("it") || word[i].equals("that") || word[i].equals("you")
+							|| word[i].equals("the"))) {
+						i++;
+						//skip most common english words
+					}
+					if (i == word.length)
+						break;
+
+					updateRatingKeyword.setInt(1, factor);
+					updateRatingKeyword.setString(2, "%" + word[i] + "%");
+					updateRatingKeyword.setInt(3, id);
+					updateRatingKeyword.execute();
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	void sameAuthor() {
@@ -90,7 +136,7 @@ class SQLMethods {
 
 				int id = RsAll.getInt("quote_id"); // and is not tuple from RsAll
 				updateRatingAuthor.setInt(3, id);
-				
+
 				updateRatingAuthor.executeUpdate();
 			}
 
@@ -216,9 +262,12 @@ class SQLMethods {
 		return out.substring(0, out.length() - 1); // cut off last newline
 
 	}
+
 	public String toString(String author) {
 		String out = "";
-		try (PreparedStatement psAll = c.prepareStatement("select * from quote where lower(author) like lower(?)")) {	//search similiar author
+		try (PreparedStatement psAll = c.prepareStatement("select * from quote where lower(author) like lower(?)")) { // search
+																														// similiar
+																														// author
 			psAll.setString(1, "%" + author + "%");
 			ResultSet RsAll = psAll.executeQuery();
 			while (RsAll.next())
