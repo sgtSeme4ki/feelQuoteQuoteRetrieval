@@ -23,7 +23,7 @@ public class SQLMain {
 			SQLMethods test = new SQLMethods(conn);
 			conn.setAutoCommit(false);
 			//System.out.println(test.toString());
-			test.right(1); // Make your fear of losing your greatest motivator.
+			test.right(1); // Expected Quote: Make your fear of losing your greatest motivator.
 			test.right(1);
 			test.right(1);
 			test.right(1);
