@@ -11,10 +11,6 @@ import java.util.regex.Pattern;
 
 public class QuoteAlgorithm {
 
-	// the id is the index of the tuple at the same time
-	// every ArrayList is one column
-	ArrayList<String> text = new ArrayList<String>();
-	ArrayList<String> author = new ArrayList<String>();
 
 	public static void main(String[] args) {
 		String generate_URL = "https://www.oberlo.com/blog/motivational-quotes";
